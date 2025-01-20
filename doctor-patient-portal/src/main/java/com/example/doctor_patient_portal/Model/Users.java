@@ -1,7 +1,9 @@
 package com.example.doctor_patient_portal.Model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,8 +12,11 @@ import org.springframework.stereotype.Component;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -32,16 +37,15 @@ public class Users implements UserDetails {
     private String password;
 
     @NotNull
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    private String TwoFactorSecret;
-
-    @NotNull
-    private boolean IsTwoFactorEnabled;
+    @OneToMany(mappedBy = "users")
+    private List<Token> tokens = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(role));
+        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

@@ -1,14 +1,14 @@
 package com.example.doctor_patient_portal.Model;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,7 +35,10 @@ public class Admin implements UserDetails {
     private String username;
 
     @NotNull
-    private String password;
+    private String password;;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Override
     public String getPassword() {
@@ -49,7 +52,7 @@ public class Admin implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("Admin"));
+        return role.getAuthorities();
     }
 
 }

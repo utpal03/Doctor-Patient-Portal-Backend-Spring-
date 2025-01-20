@@ -11,10 +11,12 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import com.example.doctor_patient_portal.Filters.JwtFilter;
 
@@ -25,6 +27,9 @@ public class Securityconfig {
     @Autowired
     JwtFilter jwtFilter;
 
+    @Autowired
+    private LogoutHandler logoutHandler;
+
     private final UserDetailsService setUserDetailsService;
 
     public Securityconfig(UserDetailsService setUserDetailsService) {
@@ -34,11 +39,16 @@ public class Securityconfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(Customizer -> Customizer.disable())
-                .authorizeHttpRequests(request -> request.requestMatchers("/", "/signup/patient","/signup/doctor").permitAll()
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/", "/signup/admin", "/signup/patient", "/signup/doctor").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .addLogoutHandler(logoutHandler)
+                        .logoutSuccessHandler(
+                                (request, response, authentication) -> SecurityContextHolder.clearContext()));
         return http.build();
     }
 

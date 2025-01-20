@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.doctor_patient_portal.Model.Doctor;
+import com.example.doctor_patient_portal.Model.Role;
 import com.example.doctor_patient_portal.Model.UserId;
 import com.example.doctor_patient_portal.Model.Users;
 import com.example.doctor_patient_portal.Repo.Doctorrepo;
@@ -28,7 +29,7 @@ public class DoctorService {
         UserId userId = new UserId(doctor.getId(), doctor.getUsername());
         user.setUserId(userId);
         user.setPassword(passwordEncoder.encode(doctor.getPassword()));
-        user.setRole("Doctor");
+        user.setRole(Role.DOCTOR);
         repo1.save(user);
 
         doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
@@ -44,10 +45,11 @@ public class DoctorService {
         UserId userId = new UserId(doctor.getId(), doctor.getUsername());
         user.setUserId(userId);
         user.setPassword(passwordEncoder.encode(doctor.getPassword()));
-        user.setRole("Doctor");
+        user.setRole(Role.DOCTOR);
         repo1.save(user);
 
         doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
+        doctor.setRole(Role.DOCTOR);
         return repo.save(doctor);
     }
 

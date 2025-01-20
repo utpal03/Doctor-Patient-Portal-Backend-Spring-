@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.doctor_patient_portal.Model.Admin;
+import com.example.doctor_patient_portal.Model.Role;
 import com.example.doctor_patient_portal.Model.UserId;
 import com.example.doctor_patient_portal.Model.Users;
 import com.example.doctor_patient_portal.Repo.Adminrepo;
@@ -33,10 +34,11 @@ public class AdminService{
         Users user = new Users();
         user.setUserId(userId);
         user.setPassword(passwordEncoder.encode(admin.getPassword()));
-        user.setRole("Admin");
+        user.setRole(Role.ADMIN);
         repo1.save(user);
 
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        admin.setRole(Role.ADMIN);
         return repo.save(admin);
     }
 
