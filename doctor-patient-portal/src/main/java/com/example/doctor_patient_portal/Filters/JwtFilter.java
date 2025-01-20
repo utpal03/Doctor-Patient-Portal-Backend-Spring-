@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.doctor_patient_portal.Repo.Tokenrepo;
-import com.example.doctor_patient_portal.Service.CommonService;
+import com.example.doctor_patient_portal.Auth.CommonService;
 import com.example.doctor_patient_portal.Service.JwtService;
 
 import jakarta.servlet.FilterChain;

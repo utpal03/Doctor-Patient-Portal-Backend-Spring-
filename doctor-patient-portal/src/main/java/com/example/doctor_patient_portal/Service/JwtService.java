@@ -22,6 +22,10 @@ import io.jsonwebtoken.security.Keys;
 public class JwtService {
 
     private String secretkey = "";
+
+    private long jwtExpiration = 60 * 60 * 1000 * 24; // 1 day
+    private long refreshTokenExpritation = 60 * 60 * 1000 * 168; // 7days
+
     public JwtService() throws NoSuchAlgorithmException {
         KeyGenerator keygen = KeyGenerator.getInstance("HmacSHA256");
         SecretKey sk = keygen.generateKey();
@@ -30,15 +34,25 @@ public class JwtService {
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
+        return buildToken(claims, username, jwtExpiration);
+    }
+
+    public String generateRefreshToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        return buildToken(claims, username, refreshTokenExpritation);
+    }
+
+    public String buildToken(Map<String, Object> claims, String username, long expiration) {
         return Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 .and()
                 .signWith(getKey())
                 .compact();
+
     }
 
     private SecretKey getKey() {

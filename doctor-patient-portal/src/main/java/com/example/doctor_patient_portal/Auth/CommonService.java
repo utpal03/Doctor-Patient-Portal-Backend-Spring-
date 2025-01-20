@@ -1,8 +1,11 @@
-package com.example.doctor_patient_portal.Service;
+package com.example.doctor_patient_portal.Auth;
+
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +18,13 @@ import com.example.doctor_patient_portal.Model.Tokentype;
 import com.example.doctor_patient_portal.Model.Users;
 import com.example.doctor_patient_portal.Repo.Tokenrepo;
 import com.example.doctor_patient_portal.Repo.Userrepo;
+import com.example.doctor_patient_portal.Service.JwtService;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class CommonService implements UserDetailsService {
@@ -29,7 +39,6 @@ public class CommonService implements UserDetailsService {
 
     private AuthenticationManager authManager;
 
-
     @Autowired
     @Lazy
     public void setAuthManager(AuthenticationManager authManager) {
@@ -39,20 +48,21 @@ public class CommonService implements UserDetailsService {
     @Autowired
     Userrepo repo;
 
-    public String verify(UserDetails userDetails) {
+    public AuthResponse verify(UserDetails userDetails) {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword()));
         if (authentication.isAuthenticated()) {
             String token = jwtService.generateToken(userDetails.getUsername());
+            String refreshToken = jwtService.generateRefreshToken(userDetails.getUsername());
             Users user = userrepo.findByUserIdUsername(userDetails.getUsername());
             if (user == null) {
                 throw new UsernameNotFoundException("User not found in Users table.");
             }
             revokeAllUserTokens(user);
             saveUserToken(user, token);
-            return token;
+            return new AuthResponse(token, refreshToken);
         }
-        return "fail";
+        throw new BadCredentialsException("Authentication failed");
     }
 
     private void saveUserToken(Users user, String jwtToken) {
@@ -84,6 +94,34 @@ public class CommonService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
         return user;
+    }
+
+    public void refreshToken(HttpServletRequest req, HttpServletResponse res)
+            throws StreamWriteException, DatabindException, IOException {
+        String authHeader = req.getHeader("Authorization");
+        String refreshToken = null;
+        String username = null;
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return;
+        }
+        refreshToken = authHeader.substring(7);
+        username = jwtService.extractUserName(refreshToken);
+
+        if (username != null) {
+            UserDetails userdetails = loadUserByUsername(username);
+            if (jwtService.validateToken(refreshToken, userdetails)) {
+                var accesstoken = jwtService.generateToken(username);
+                revokeAllUserTokens(repo.findByUserIdUsername(userdetails.getUsername()));
+                saveUserToken(repo.findByUserIdUsername(userdetails.getUsername()), refreshToken);
+                var authResponse = AuthResponse.builder()
+                        .accessToken(accesstoken)
+                        .refreshToken(refreshToken)
+                        .build();
+
+                new ObjectMapper().writeValue(res.getOutputStream(), authResponse);
+            }
+        }
     }
 
 }
