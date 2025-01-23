@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.doctor_patient_portal.Model.Patient;
+import com.example.doctor_patient_portal.Auth.AuthRequest;
 import com.example.doctor_patient_portal.Auth.AuthResponse;
 import com.example.doctor_patient_portal.Auth.CommonService;
 import com.example.doctor_patient_portal.Service.PatientService;
@@ -31,8 +32,8 @@ public class PatientController {
     }
 
     @PostMapping("/login/patient")
-    public AuthResponse login(@RequestBody Patient patient) {
-        return service2.verify(patient);
+    public AuthResponse login(@RequestBody AuthRequest authRequest) {
+        return service2.verify(authRequest);
     }
 
     @PostMapping("/signup/patient")

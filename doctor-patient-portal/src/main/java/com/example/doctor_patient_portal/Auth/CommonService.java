@@ -1,6 +1,7 @@
 package com.example.doctor_patient_portal.Auth;
 
 import java.io.IOException;
+import com.example.doctor_patient_portal.Model.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -48,19 +49,20 @@ public class CommonService implements UserDetailsService {
     @Autowired
     Userrepo repo;
 
-    public AuthResponse verify(UserDetails userDetails) {
+    public AuthResponse verify(AuthRequest authRequest) {
         Authentication authentication = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword()));
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
-            String token = jwtService.generateToken(userDetails.getUsername());
-            String refreshToken = jwtService.generateRefreshToken(userDetails.getUsername());
-            Users user = userrepo.findByUserIdUsername(userDetails.getUsername());
+            String token = jwtService.generateToken(authRequest.getUsername());
+            String refreshToken = jwtService.generateRefreshToken(authRequest.getUsername());
+            Users user = userrepo.findByUserIdUsername(authRequest.getUsername());
             if (user == null) {
                 throw new UsernameNotFoundException("User not found in Users table.");
             }
+            Role role = user.getRole();
             revokeAllUserTokens(user);
-            saveUserToken(user, token);
-            return new AuthResponse(token, refreshToken);
+            saveUserToken(user, refreshToken);
+            return new AuthResponse(token, refreshToken, role);
         }
         throw new BadCredentialsException("Authentication failed");
     }
@@ -111,9 +113,13 @@ public class CommonService implements UserDetailsService {
         if (username != null) {
             UserDetails userdetails = loadUserByUsername(username);
             if (jwtService.validateToken(refreshToken, userdetails)) {
+
+                Users user = repo.findByUserIdUsername(userdetails.getUsername());
                 var accesstoken = jwtService.generateToken(username);
-                revokeAllUserTokens(repo.findByUserIdUsername(userdetails.getUsername()));
-                saveUserToken(repo.findByUserIdUsername(userdetails.getUsername()), refreshToken);
+
+                revokeAllUserTokens(user);
+                saveUserToken(user, refreshToken);
+
                 var authResponse = AuthResponse.builder()
                         .accessToken(accesstoken)
                         .refreshToken(refreshToken)

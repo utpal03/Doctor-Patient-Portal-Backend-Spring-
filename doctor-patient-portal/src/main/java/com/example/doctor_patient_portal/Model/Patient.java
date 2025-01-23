@@ -1,7 +1,6 @@
 package com.example.doctor_patient_portal.Model;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,11 +33,6 @@ public class Patient implements UserDetails {
     @NotNull
     @Email
     private String email;
-
-    private List<String> Current_Medications;
-
-    @NotNull
-    private String primary_Doctor_name;
 
     private String username;
 

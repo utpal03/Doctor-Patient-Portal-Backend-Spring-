@@ -21,11 +21,12 @@ import com.fasterxml.jackson.databind.DatabindException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import com.example.doctor_patient_portal.Auth.AuthRequest;
 import com.example.doctor_patient_portal.Auth.AuthResponse;
 import com.example.doctor_patient_portal.Auth.CommonService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin("http://localhost:3000")
 @RequestMapping
 public class AdminController {
 
@@ -45,8 +46,8 @@ public class AdminController {
     }
 
     @PostMapping("/login/admin")
-    public AuthResponse login(@RequestBody Admin admin) {
-        return service2.verify(admin);
+    public AuthResponse login(@RequestBody AuthRequest authRequest) {
+        return service2.verify(authRequest);
     }
 
     @GetMapping("/show/admin")

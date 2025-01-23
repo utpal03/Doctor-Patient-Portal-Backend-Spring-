@@ -1,5 +1,4 @@
 package com.example.doctor_patient_portal.Auth;
-import com.example.doctor_patient_portal.Model.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,11 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
-
-    private String accessToken;
-    private String refreshToken;
-    private Role roles;
+@NoArgsConstructor
+public class AuthRequest {
+    private String username;
+    private String password;
 }
