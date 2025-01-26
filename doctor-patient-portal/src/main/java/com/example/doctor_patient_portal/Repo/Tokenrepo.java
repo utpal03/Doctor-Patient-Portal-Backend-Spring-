@@ -20,5 +20,4 @@ public interface Tokenrepo extends JpaRepository<Token, Integer> {
     List<Token> findAllValidTokenByUser(@Param("id") Integer id, @Param("username") String username);
 
     Optional<Token> findByToken(String token);
-
 }

@@ -1,14 +1,18 @@
 package com.example.doctor_patient_portal.Controller;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.doctor_patient_portal.Model.Doctor;
 import com.example.doctor_patient_portal.Auth.AuthRequest;
@@ -30,10 +34,12 @@ public class DoctorController {
     @Autowired
     CommonService service2;
 
-    @PostMapping("/signup/doctor")
-    public ResponseEntity<?> doctor(@RequestBody Doctor doctor) {
+    @PostMapping(value = "/signup/doctor", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE,
+            MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> doctor(@ModelAttribute Doctor doctor,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         try {
-            Doctor doc = service.adddoctor(doctor);
+            Doctor doc = service.adddoctor(doctor, profileImage);
             return new ResponseEntity<>(doc, HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,6 +1,7 @@
 package com.example.doctor_patient_portal.Auth;
 
 import java.io.IOException;
+
 import com.example.doctor_patient_portal.Model.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,7 +120,6 @@ public class CommonService implements UserDetailsService {
 
                 revokeAllUserTokens(user);
                 saveUserToken(user, refreshToken);
-
                 var authResponse = AuthResponse.builder()
                         .accessToken(accesstoken)
                         .refreshToken(refreshToken)

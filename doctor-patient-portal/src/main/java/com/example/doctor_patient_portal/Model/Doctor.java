@@ -1,13 +1,13 @@
 package com.example.doctor_patient_portal.Model;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +15,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.Data;
 
 @Component
@@ -26,30 +27,31 @@ public class Doctor implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull
     private String name;
-
-    @NotNull
     private String department;
-
-    @NotNull
     private String phoneNumber;
-
+    private String licenseNumber;
+    private Double consultationFees;
+    private List<String> availableDays;
     @Email
-    @NotNull
     @Column(nullable = false, unique = true)
     private String email;
-
     private int experience;
-
-    @NotNull
     private String username;
-
-    @NotNull
     private String password;
+
+    private String imageName;
+    private String imageType;
+
+    @Lob
+    private byte[] profileImage;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public void setRole(String roleString) {
+        this.role = Role.fromString(roleString.toUpperCase());
+    }
 
     @Override
     public String getPassword() {

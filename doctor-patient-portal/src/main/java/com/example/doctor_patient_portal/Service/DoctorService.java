@@ -1,10 +1,12 @@
 package com.example.doctor_patient_portal.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.doctor_patient_portal.Model.Doctor;
 import com.example.doctor_patient_portal.Model.Role;
@@ -24,13 +26,19 @@ public class DoctorService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
-    public Doctor adddoctor(Doctor doctor) {
+    public Doctor adddoctor(Doctor doctor, MultipartFile profileImage) throws IOException {
         Users user = new Users();
         UserId userId = new UserId(doctor.getId(), doctor.getUsername());
         user.setUserId(userId);
         user.setPassword(passwordEncoder.encode(doctor.getPassword()));
         user.setRole(Role.DOCTOR);
         repo1.save(user);
+
+        if (profileImage != null) {
+            doctor.setProfileImage(profileImage.getBytes());
+            doctor.setImageName(profileImage.getOriginalFilename());
+            doctor.setImageType(profileImage.getContentType());
+        }
 
         doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
         return repo.save(doctor);
@@ -49,7 +57,6 @@ public class DoctorService {
         repo1.save(user);
 
         doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
-        doctor.setRole(Role.DOCTOR);
         return repo.save(doctor);
     }
 
