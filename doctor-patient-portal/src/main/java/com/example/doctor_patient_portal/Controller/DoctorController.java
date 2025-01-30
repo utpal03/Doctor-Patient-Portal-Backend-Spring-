@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.doctor_patient_portal.Model.Doctor;
 import com.example.doctor_patient_portal.Auth.AuthRequest;
 import com.example.doctor_patient_portal.Auth.AuthResponse;
 import com.example.doctor_patient_portal.Auth.CommonService;
+import com.example.doctor_patient_portal.Model.Doctor.Doctor;
 import com.example.doctor_patient_portal.Service.DoctorService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +51,7 @@ public class DoctorController {
         return service2.verify(authRequest);
     }
 
-    @GetMapping("/show/doctors")
+    @GetMapping("/doctorInfo")
     public ResponseEntity<List<Doctor>> doctor() {
         return new ResponseEntity<>(service.showdoctor(), HttpStatus.OK);
     }

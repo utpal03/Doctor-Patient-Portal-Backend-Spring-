@@ -8,10 +8,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.doctor_patient_portal.Model.Doctor;
 import com.example.doctor_patient_portal.Model.Role;
 import com.example.doctor_patient_portal.Model.UserId;
 import com.example.doctor_patient_portal.Model.Users;
+import com.example.doctor_patient_portal.Model.Doctor.Doctor;
 import com.example.doctor_patient_portal.Repo.Doctorrepo;
 import com.example.doctor_patient_portal.Repo.Userrepo;
 

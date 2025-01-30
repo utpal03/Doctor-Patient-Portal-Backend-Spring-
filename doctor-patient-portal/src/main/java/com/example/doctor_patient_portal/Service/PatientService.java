@@ -51,9 +51,11 @@ public class PatientService {
         repo1.save(user);
 
         if (profileimage != null) {
+
             patient.setProfileImage(profileimage.getBytes());
             patient.setImageName(profileimage.getOriginalFilename());
             patient.setImageType(profileimage.getContentType());
+            
         }
         patient.setPassword(receviedPassword);
         if (repo.findByUsername(patient.getUsername()) != null) {

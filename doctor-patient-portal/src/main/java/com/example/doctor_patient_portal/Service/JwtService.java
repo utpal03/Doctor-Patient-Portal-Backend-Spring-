@@ -42,6 +42,11 @@ public class JwtService {
         return buildToken(claims, username, refreshTokenExpritation);
     }
 
+    private SecretKey getKey() {
+        byte[] key = Decoders.BASE64.decode(secretkey);
+        return Keys.hmacShaKeyFor(key);
+    }
+
     public String buildToken(Map<String, Object> claims, String username, long expiration) {
         return Jwts.builder()
                 .claims()
@@ -53,11 +58,6 @@ public class JwtService {
                 .signWith(getKey())
                 .compact();
 
-    }
-
-    private SecretKey getKey() {
-        byte[] key = Decoders.BASE64.decode(secretkey);
-        return Keys.hmacShaKeyFor(key);
     }
 
     public String extractUserName(String token) {
@@ -83,7 +83,7 @@ public class JwtService {
         return (userName.equals(userdetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 

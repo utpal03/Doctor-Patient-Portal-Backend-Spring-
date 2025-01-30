@@ -1,4 +1,4 @@
-package com.example.doctor_patient_portal.Model;
+package com.example.doctor_patient_portal.Model.Doctor;
 
 import java.util.Collection;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.example.doctor_patient_portal.Model.Role;
 
 import jakarta.validation.constraints.Email;
 import jakarta.persistence.Column;
@@ -49,7 +51,7 @@ public class Doctor implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public void setRole(String roleString) {
+        public void setRole(String roleString) {
         this.role = Role.fromString(roleString.toUpperCase());
     }
 
