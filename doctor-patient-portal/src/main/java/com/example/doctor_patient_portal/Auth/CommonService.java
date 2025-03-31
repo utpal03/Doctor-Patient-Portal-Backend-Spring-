@@ -63,7 +63,7 @@ public class CommonService implements UserDetailsService {
             Role role = user.getRole();
             revokeAllUserTokens(user);
             saveUserToken(user, refreshToken);
-            return new AuthResponse(token, refreshToken, role);
+            return new AuthResponse(user.getUserId().getId(), token, refreshToken, role);
         }
         throw new BadCredentialsException("Authentication failed");
     }

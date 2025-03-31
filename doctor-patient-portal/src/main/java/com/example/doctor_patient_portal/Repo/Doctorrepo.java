@@ -7,5 +7,5 @@ import com.example.doctor_patient_portal.Model.Doctor.Doctor;
 
 @Repository
 public interface Doctorrepo extends JpaRepository<Doctor, Integer> {
-
+    Doctor findByUsername(String username);
 }

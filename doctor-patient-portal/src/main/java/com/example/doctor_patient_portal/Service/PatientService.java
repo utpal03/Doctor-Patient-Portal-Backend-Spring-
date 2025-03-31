@@ -42,29 +42,31 @@ public class PatientService {
     }
 
     public Patient addpatient(Patient patient, MultipartFile profileimage) throws IOException {
-        UserId userId = new UserId(patient.getId(), patient.getUsername());
-        String receviedPassword = passwordEncoder.encode(patient.getPassword());
-        Users user = new Users();
-        user.setUserId(userId);
-        user.setPassword(receviedPassword);
-        user.setRole(Role.PATIENT);
-        repo1.save(user);
-
-        if (profileimage != null) {
-
-            patient.setProfileImage(profileimage.getBytes());
-            patient.setImageName(profileimage.getOriginalFilename());
-            patient.setImageType(profileimage.getContentType());
-            
-        }
-        patient.setPassword(receviedPassword);
         if (repo.findByUsername(patient.getUsername()) != null) {
             throw new RuntimeException("Username already exists");
         }
         if (repo.findByEmail(patient.getEmail()) != null) {
             throw new RuntimeException("Email already registered");
         }
-        return repo.save(patient);
+        if (profileimage != null) {
+
+            patient.setProfileImage(profileimage.getBytes());
+            patient.setImageName(profileimage.getOriginalFilename());
+            patient.setImageType(profileimage.getContentType());
+
+        }
+
+        String receviedPassword = passwordEncoder.encode(patient.getPassword());
+        patient.setPassword(receviedPassword);
+        Patient savedPatient = repo.save(patient);
+
+        UserId userId = new UserId(savedPatient.getId(), savedPatient.getUsername());
+        Users user = new Users();
+        user.setUserId(userId);
+        user.setPassword(receviedPassword);
+        user.setRole(Role.PATIENT);
+        repo1.save(user);
+        return savedPatient;
     }
 
     public Object viewAppointments() {

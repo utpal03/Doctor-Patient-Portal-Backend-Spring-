@@ -27,21 +27,27 @@ public class DoctorService {
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
     public Doctor adddoctor(Doctor doctor, MultipartFile profileImage) throws IOException {
-        Users user = new Users();
-        UserId userId = new UserId(doctor.getId(), doctor.getUsername());
-        user.setUserId(userId);
-        user.setPassword(passwordEncoder.encode(doctor.getPassword()));
-        user.setRole(Role.DOCTOR);
-        repo1.save(user);
+        if (repo.findByUsername(doctor.getUsername()) != null) {
+            throw new RuntimeException("Username already exists");
+        }
 
         if (profileImage != null) {
             doctor.setProfileImage(profileImage.getBytes());
             doctor.setImageName(profileImage.getOriginalFilename());
             doctor.setImageType(profileImage.getContentType());
         }
+        String receivedPass = passwordEncoder.encode(doctor.getPassword());
+        doctor.setPassword(receivedPass);
+        Doctor savedDoc = repo.save(doctor);
 
-        doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
-        return repo.save(doctor);
+        Users user = new Users();
+        UserId userId = new UserId(doctor.getId(), doctor.getUsername());
+        user.setPassword(receivedPass);
+        user.setUserId(userId);
+        user.setRole(Role.DOCTOR);
+        repo1.save(user);
+
+        return savedDoc;
     }
 
     public List<Doctor> showdoctor() {
