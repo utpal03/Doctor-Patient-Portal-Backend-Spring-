@@ -19,5 +19,9 @@ public interface Tokenrepo extends JpaRepository<Token, Integer> {
             """)
     List<Token> findAllValidTokenByUser(@Param("id") Integer id, @Param("username") String username);
 
+    @Query(value =  """
+            select t from Token t
+            WHERE t.token = :token
+            """)
     Optional<Token> findByToken(String token);
 }

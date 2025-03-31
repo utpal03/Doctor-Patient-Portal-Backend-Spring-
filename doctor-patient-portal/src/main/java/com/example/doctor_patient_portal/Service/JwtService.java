@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -23,7 +24,7 @@ public class JwtService {
 
     private String secretkey = "";
 
-    private long jwtExpiration = 60 * 60 * 1000 * 24; // 1 day
+    private long jwtExpiration = 2 * 60 * 1000;
     private long refreshTokenExpritation = 60 * 60 * 1000 * 168; // 7days
 
     public JwtService() throws NoSuchAlgorithmException {
@@ -70,12 +71,15 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-
+        try {
+            return Jwts.parser()
+                    .verifyWith(getKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims(); // ✅ extract claims even if expired
+        }
     }
 
     public boolean validateToken(String token, UserDetails userdetails) {
