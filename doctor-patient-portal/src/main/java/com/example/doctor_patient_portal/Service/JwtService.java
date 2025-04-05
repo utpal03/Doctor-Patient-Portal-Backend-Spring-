@@ -78,7 +78,7 @@ public class JwtService {
                     .parseSignedClaims(token)
                     .getPayload();
         } catch (ExpiredJwtException e) {
-            return e.getClaims(); // ✅ extract claims even if expired
+            return e.getClaims(); // extract claims even if expired
         }
     }
 

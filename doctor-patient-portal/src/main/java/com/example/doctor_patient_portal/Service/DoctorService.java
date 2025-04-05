@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +13,9 @@ import com.example.doctor_patient_portal.Model.Role;
 import com.example.doctor_patient_portal.Model.UserId;
 import com.example.doctor_patient_portal.Model.Users;
 import com.example.doctor_patient_portal.Model.Doctor.Doctor;
+import com.example.doctor_patient_portal.Repo.DoctorAppointmentRepo;
 import com.example.doctor_patient_portal.Repo.Doctorrepo;
+import com.example.doctor_patient_portal.Repo.ScheduleRepo;
 import com.example.doctor_patient_portal.Repo.Userrepo;
 
 @Service
@@ -23,6 +26,11 @@ public class DoctorService {
 
     @Autowired
     Userrepo repo1;
+
+    @Autowired
+    DoctorAppointmentRepo appointmentrepo;
+
+    ScheduleRepo schedulerepo;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
@@ -64,6 +72,14 @@ public class DoctorService {
 
         doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
         return repo.save(doctor);
+    }
+
+    public Object viewAppointments() {
+        return appointmentrepo.findAll();
+    }
+
+    public Object viewSchedule(){
+        return schedulerepo.findAll();
     }
 
 }

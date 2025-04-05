@@ -1,7 +1,11 @@
-package com.example.doctor_patient_portal.Model.Patient;
+package com.example.doctor_patient_portal.Model.Doctor;
 
 import java.sql.Date;
 import java.sql.Time;
+
+import org.springframework.stereotype.Component;
+
+import com.example.doctor_patient_portal.Model.Patient.Patient;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,17 +15,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
-@Entity
 @Data
-public class Appointment {
+@Entity
+@Component
+public class DoctorAppointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private Date date;
     private Time time;
-    private String doctorName;
-    private String specialization;
-    private String location;
+    private String PatientName;
+    private String issue;
     private String status;
 
     @ManyToOne

@@ -1,5 +1,6 @@
 package com.example.doctor_patient_portal.Controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,10 @@ import com.example.doctor_patient_portal.Auth.AuthRequest;
 import com.example.doctor_patient_portal.Auth.AuthResponse;
 import com.example.doctor_patient_portal.Auth.CommonService;
 import com.example.doctor_patient_portal.Model.Doctor.Doctor;
+import com.example.doctor_patient_portal.Model.Patient.Patient;
+import com.example.doctor_patient_portal.Repo.Patientrepo;
 import com.example.doctor_patient_portal.Service.DoctorService;
+import com.example.doctor_patient_portal.Service.PatientService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,6 +37,9 @@ public class DoctorController {
 
     @Autowired
     CommonService service2;
+
+    @Autowired
+    PatientService patientService;
 
     @PostMapping(value = "/signup/doctor", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE })
@@ -56,8 +63,34 @@ public class DoctorController {
         return new ResponseEntity<>(service.showdoctor(), HttpStatus.OK);
     }
 
-    @PutMapping("/update/doctor")
+    @PutMapping("/update/profile")
     public ResponseEntity<?> updatedoctor(@RequestBody Doctor doctor) {
         return new ResponseEntity<>(service.updateDoctor(doctor), HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("/doctor/appointments")
+    public ResponseEntity<?> viewAppointment() {
+        return new ResponseEntity<>(service.viewAppointments(), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> viewSchedule() {
+        return new ResponseEntity<>(service.viewSchedule(), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/doctor/patients")
+    public ResponseEntity<?> patientRecord() {
+        return new ResponseEntity<>(patientService.viewMedications(), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/doctorConversations")
+    public ResponseEntity<?> viewMessages() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/doctor/add-patient")
+    public ResponseEntity<?> addpatient(@RequestBody Patient patient) throws IOException {
+        return new ResponseEntity<>(patientService.addpatient(patient, null), HttpStatus.ACCEPTED);
+    }
+
 }

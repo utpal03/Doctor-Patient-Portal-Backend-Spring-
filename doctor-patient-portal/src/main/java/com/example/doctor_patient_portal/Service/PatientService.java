@@ -12,7 +12,7 @@ import com.example.doctor_patient_portal.Model.Role;
 import com.example.doctor_patient_portal.Model.UserId;
 import com.example.doctor_patient_portal.Model.Users;
 import com.example.doctor_patient_portal.Model.Patient.Patient;
-import com.example.doctor_patient_portal.Repo.AppointmentRepo;
+import com.example.doctor_patient_portal.Repo.PatientAppointmentRepo;
 import com.example.doctor_patient_portal.Repo.MedicalReportRepo;
 import com.example.doctor_patient_portal.Repo.MedicationRepo;
 import com.example.doctor_patient_portal.Repo.Patientrepo;
@@ -30,7 +30,7 @@ public class PatientService {
     MedicalReportRepo medicalRepo;
 
     @Autowired
-    AppointmentRepo appointmentRepo;
+    PatientAppointmentRepo appointmentRepo;
 
     @Autowired
     MedicationRepo medicationRepo;
