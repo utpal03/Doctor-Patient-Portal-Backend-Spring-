@@ -20,7 +20,6 @@ import com.example.doctor_patient_portal.Auth.AuthResponse;
 import com.example.doctor_patient_portal.Auth.CommonService;
 import com.example.doctor_patient_portal.Model.Doctor.Doctor;
 import com.example.doctor_patient_portal.Model.Patient.Patient;
-import com.example.doctor_patient_portal.Repo.Patientrepo;
 import com.example.doctor_patient_portal.Service.DoctorService;
 import com.example.doctor_patient_portal.Service.PatientService;
 
