@@ -24,7 +24,7 @@ public class JwtService {
 
     private String secretkey = "";
 
-    private long jwtExpiration = 2 * 60 * 1000;
+    private long jwtExpiration = 1 * 60 * 1000;
     private long refreshTokenExpritation = 60 * 60 * 1000 * 168; // 7days
 
     public JwtService() throws NoSuchAlgorithmException {
